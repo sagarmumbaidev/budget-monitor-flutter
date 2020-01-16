@@ -1,0 +1,5 @@
+version: "Apple Swift version 5.1.3 (swiftlang-1100.0.282.1 clang-1100.0.33.15)"
+options: "9bc07e24ed9e0397495cb3da5f3dea9e"
+build_time: [1579116334, 203632000]
+inputs:
+  "/Users/sagarsalian/AndroidStudioProjects/money_monitor/ios/Runner/AppDelegate.swift": [1571872148, 0]
