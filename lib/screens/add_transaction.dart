@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:money_monitor/model/transaction.dart';
+import 'package:money_monitor/util/DBHelper.dart';
 
 class AddTransaction extends StatefulWidget {
   @override
@@ -10,11 +12,20 @@ enum TransactionType { expense, income }
 class _AddTransactionState extends State<AddTransaction> {
   static var _transactionType = ['Expense', 'Income'];
   String _defaultSelectedTransactionType = _transactionType[0];
-
   String appBarTitle;
+  var dbHelper;
 
-  TextEditingController titleController = TextEditingController();
+  TextEditingController amountController = TextEditingController();
   TextEditingController descriptionController = TextEditingController();
+  @override
+  void initState() {
+    super.initState();
+    dbHelper = DBHelper();
+    //print(dbHelper.getCategories());
+    /*transactions = dbHelper.getTransactions();
+    print(transactions);*/
+  }
+
   @override
   Widget build(BuildContext context) {
     TextStyle textStyle = Theme.of(context).textTheme.title;
@@ -26,7 +37,7 @@ class _AddTransactionState extends State<AddTransaction> {
         padding: EdgeInsets.only(top: 15.0, left: 10.0, right: 10.0),
         child: ListView(
           children: <Widget>[
-            // First element
+            // Expense type section
             ListTile(
               title: DropdownButton(
                   items: _transactionType.map((String dropDownStringItem) {
@@ -40,36 +51,48 @@ class _AddTransactionState extends State<AddTransaction> {
                   onChanged: (valueSelectedByUser) {
                     setState(() {
                       _defaultSelectedTransactionType = valueSelectedByUser;
-                      debugPrint('User selected $valueSelectedByUser');
                     });
                   }),
             ),
-
-            // Second Element
+            ListTile(
+              title: DropdownButton(
+                  items: _transactionType.map((String dropDownStringItem) {
+                    return DropdownMenuItem<String>(
+                      value: dropDownStringItem,
+                      child: Text(dropDownStringItem),
+                    );
+                  }).toList(),
+                  style: textStyle,
+                  value: _defaultSelectedTransactionType,
+                  onChanged: (valueSelectedByUser) {
+                    setState(() {
+                      _defaultSelectedTransactionType = valueSelectedByUser;
+                    });
+                  }),
+            ),
             Padding(
               padding: EdgeInsets.only(top: 15.0, bottom: 15.0),
               child: TextField(
-                controller: titleController,
+                controller: amountController,
                 style: textStyle,
+                keyboardType: TextInputType.number,
                 onChanged: (value) {
-                  debugPrint('Something changed in Title Text Field');
+                  //
                 },
                 decoration: InputDecoration(
-                    labelText: 'Title',
+                    labelText: 'Amount',
                     labelStyle: textStyle,
                     border: OutlineInputBorder(
                         borderRadius: BorderRadius.circular(5.0))),
               ),
             ),
-
-            // Third Element
             Padding(
               padding: EdgeInsets.only(top: 15.0, bottom: 15.0),
               child: TextField(
                 controller: descriptionController,
                 style: textStyle,
                 onChanged: (value) {
-                  debugPrint('Something changed in Description Text Field');
+                  //
                 },
                 decoration: InputDecoration(
                     labelText: 'Description',
@@ -79,7 +102,7 @@ class _AddTransactionState extends State<AddTransaction> {
               ),
             ),
 
-            // Fourth Element
+            // Button section
             Padding(
               padding: EdgeInsets.only(top: 15.0, bottom: 15.0),
               child: Row(
@@ -94,7 +117,15 @@ class _AddTransactionState extends State<AddTransaction> {
                       ),
                       onPressed: () {
                         setState(() {
-                          debugPrint("Save button clicked");
+                          if (amountController.text.isNotEmpty) {
+                            MoneyTransaction mt = MoneyTransaction(
+                                null,
+                                double.parse(amountController.text),
+                                descriptionController.text,
+                                _defaultSelectedTransactionType);
+                            dbHelper.save(mt);
+                            Navigator.pop(context);
+                          }
                         });
                       },
                     ),
@@ -112,9 +143,6 @@ class _AddTransactionState extends State<AddTransaction> {
                       ),
                       onPressed: () {
                         Navigator.pop(context);
-                        setState(() {
-                          debugPrint("Delete button clicked");
-                        });
                       },
                     ),
                   ),

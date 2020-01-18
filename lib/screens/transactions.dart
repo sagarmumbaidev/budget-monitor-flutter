@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:money_monitor/model/transaction.dart';
 import 'package:money_monitor/screens/add_transaction.dart';
+import 'package:money_monitor/util/DBHelper.dart';
 
 class Transactions extends StatefulWidget {
   @override
@@ -7,6 +9,14 @@ class Transactions extends StatefulWidget {
 }
 
 class _TransactionsState extends State<Transactions> {
+  var dbHelper;
+  var transactions;
+  @override
+  void initState() {
+    super.initState();
+    dbHelper = DBHelper();
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -25,22 +35,30 @@ class _TransactionsState extends State<Transactions> {
     );
   }
 
-  ListView getTransactionListView() {
-    return ListView.builder(
-        itemCount: 5,
-        itemBuilder: (BuildContext context, int index) {
-          return Card(
-            color: Colors.white,
-            elevation: 5.0,
-            child: ListTile(
-              title: Text('trsansaction title'),
-              subtitle: Text('trsansaction subtitle'),
-              trailing: Text('12.00'),
-              onTap: () {
-                debugPrint('list is tapped');
-              },
-            ),
-          );
-        });
+  getTransactionListView() {
+    return FutureBuilder<List<MoneyTransaction>>(
+      future: dbHelper.getTransactions(),
+      builder: (context, snapshot) {
+        return snapshot.hasData
+            ? ListView.builder(
+                itemCount: snapshot.data.length,
+                itemBuilder: (_, int position) {
+                  final item = snapshot.data[position];
+                  return Card(
+                    child: ListTile(
+                      title: Text(item.description),
+                      subtitle: Text(item.transactionType),
+                      trailing: Text(item.transactionType == 'Expense'
+                          ? '-' + item.amount.toString()
+                          : '+' + item.amount.toString()),
+                    ),
+                  );
+                },
+              )
+            : Center(
+                child: CircularProgressIndicator(),
+              );
+      },
+    );
   }
 }

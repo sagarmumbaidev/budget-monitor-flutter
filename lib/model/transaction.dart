@@ -1,15 +1,30 @@
-import 'package:flutter/foundation.dart';
+class MoneyTransaction {
+  int id;
+  double amount;
+  String description;
+  String transactionType;
 
-class Transaction {
-  final int id;
-  final String note;
-  final double amount;
-  final DateTime date;
+  MoneyTransaction(
+    this.id,
+    this.amount,
+    this.description,
+    this.transactionType,
+  );
 
-  Transaction({
-    @required this.id,
-    @required this.note,
-    @required this.amount,
-    @required this.date,
-  });
+  Map<String, dynamic> toMap() {
+    var map = <String, dynamic>{
+      'id': id,
+      'amount': amount,
+      'description': description,
+      'transaction_type': transactionType,
+    };
+    return map;
+  }
+
+  MoneyTransaction.fromMap(Map<String, dynamic> map) {
+    id = map['id'];
+    amount = map['amount'];
+    description = map['description'];
+    transactionType = map['transaction_type'];
+  }
 }
