@@ -39,6 +39,26 @@ class DBHelper {
         "INSERT INTO categories ('id', 'name') values (?, ?)", [1, "Food"]);
     await db.execute("INSERT INTO categories ('id', 'name') values (?, ?)",
         [2, "Education"]);
+    await db.execute("INSERT INTO categories ('id', 'name') values (?, ?)",
+        [3, "Education 3"]);
+    await db.execute("INSERT INTO categories ('id', 'name') values (?, ?)",
+        [4, "Education 4"]);
+    await db.execute("INSERT INTO categories ('id', 'name') values (?, ?)",
+        [5, "Education 5"]);
+    await db.execute("INSERT INTO categories ('id', 'name') values (?, ?)",
+        [6, "Education 6"]);
+    await db.execute("INSERT INTO categories ('id', 'name') values (?, ?)",
+        [7, "Education 7"]);
+    await db.execute("INSERT INTO categories ('id', 'name') values (?, ?)",
+        [8, "Education 8"]);
+    await db.execute("INSERT INTO categories ('id', 'name') values (?, ?)",
+        [9, "Education 9"]);
+    await db.execute("INSERT INTO categories ('id', 'name') values (?, ?)",
+        [10, "Education 10"]);
+    await db.execute("INSERT INTO categories ('id', 'name') values (?, ?)",
+        [11, "Education 11"]);
+    await db.execute("INSERT INTO categories ('id', 'name') values (?, ?)",
+        [12, "Education 12"]);
     /* await db.execute("CREATE TABLE categories ("
         "id INTEGER PRIMARY KEY, "
         "name TEXT");

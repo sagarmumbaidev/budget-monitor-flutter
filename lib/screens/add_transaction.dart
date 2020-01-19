@@ -12,6 +12,7 @@ class AddTransaction extends StatefulWidget {
 
 class _AddTransactionState extends State<AddTransaction> {
   static var _transactionType = ['Expense', 'Income'];
+  List<String> _listViewData = [];
   String _defaultSelectedTransactionType = _transactionType[0];
   String appBarTitle;
   var dbHelper;
@@ -63,28 +64,60 @@ class _AddTransactionState extends State<AddTransaction> {
                   textScaleFactor: 1.5,
                 ),
                 onPressed: () {
-                  dbHelper.getCategories().then((val) {
+                  /*dbHelper.getCategories().then((val) {
                     for (var item in val) {
                       print(item.name);
                     }
-                  });
+                  });*/
                   showDialog(
                       context: context,
                       barrierDismissible: true,
-                      builder: (BuildContext context) {
-                        return SimpleDialog(
-                          title: const Text('Select Category '),
-                          children: <Widget>[
-                            dbHelper.getCategories().then((val) {
-                              for (var item in val) {
-                                SimpleDialogOption(
-                                  onPressed: () {
-                                    Navigator.pop(context);
-                                  },
-                                  child: const Text('Food'),
-                                );
-                              }
-                            }),
+                      builder: (context) {
+                        return AlertDialog(
+                          title: Text('select category'),
+                          content: Container(
+                            width: double.maxFinite,
+                            height: 300.0,
+                            child: FutureBuilder(
+                              future: dbHelper.getCategories(),
+                              builder: (context, snapshot) {
+                                return snapshot.hasData
+                                    ? GridView.builder(
+                                        itemCount: snapshot.data.length,
+                                        gridDelegate:
+                                            new SliverGridDelegateWithFixedCrossAxisCount(
+                                                crossAxisCount: 2),
+                                        itemBuilder: (_, int position) {
+                                          final item = snapshot.data[position];
+                                          return SimpleDialogOption(
+                                            onPressed: () {
+                                              Navigator.pop(context);
+                                            },
+                                            child: Column(
+                                              children: <Widget>[
+                                                SizedBox(height: 30),
+                                                Icon(Icons.face),
+                                                SizedBox(height: 20),
+                                                Text(item.name)
+                                              ],
+                                            ),
+                                          );
+                                        },
+                                      )
+                                    : Center(
+                                        //child: CircularProgressIndicator(),
+                                        child: Text("No Transaction yet"),
+                                      );
+                              },
+                            ),
+                          ),
+                          actions: <Widget>[
+                            new FlatButton(
+                              child: new Text('CANCEL'),
+                              onPressed: () {
+                                Navigator.of(context).pop();
+                              },
+                            )
                           ],
                         );
                       });
