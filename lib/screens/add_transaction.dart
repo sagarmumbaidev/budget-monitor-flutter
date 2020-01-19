@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:money_monitor/model/category.dart';
 import 'package:money_monitor/model/transaction.dart';
 import 'package:money_monitor/util/DBHelper.dart';
 
@@ -6,8 +7,6 @@ class AddTransaction extends StatefulWidget {
   @override
   _AddTransactionState createState() => _AddTransactionState();
 }
-
-enum TransactionType { expense, income }
 
 class _AddTransactionState extends State<AddTransaction> {
   static var _transactionType = ['Expense', 'Income'];
@@ -21,9 +20,6 @@ class _AddTransactionState extends State<AddTransaction> {
   void initState() {
     super.initState();
     dbHelper = DBHelper();
-    //print(dbHelper.getCategories());
-    /*transactions = dbHelper.getTransactions();
-    print(transactions);*/
   }
 
   @override
@@ -54,21 +50,51 @@ class _AddTransactionState extends State<AddTransaction> {
                     });
                   }),
             ),
-            ListTile(
-              title: DropdownButton(
-                  items: _transactionType.map((String dropDownStringItem) {
-                    return DropdownMenuItem<String>(
-                      value: dropDownStringItem,
-                      child: Text(dropDownStringItem),
-                    );
-                  }).toList(),
-                  style: textStyle,
-                  value: _defaultSelectedTransactionType,
-                  onChanged: (valueSelectedByUser) {
-                    setState(() {
-                      _defaultSelectedTransactionType = valueSelectedByUser;
-                    });
-                  }),
+            Padding(
+              padding: EdgeInsets.only(top: 15.0, bottom: 15.0),
+              child: RaisedButton(
+                elevation: 0,
+                color: Theme.of(context).primaryColorDark,
+                textColor: Theme.of(context).primaryColorLight,
+                child: Text(
+                  'Select Category',
+                  textScaleFactor: 1.5,
+                ),
+                onPressed: () {
+                  showDialog(
+                      context: context,
+                      builder: (BuildContext context) {
+                        return Container(
+                          margin: EdgeInsets.only(
+                              top: 30, left: 20, right: 20, bottom: 20),
+                          width: MediaQuery.of(context).size.width - 400,
+                          height: MediaQuery.of(context).size.height - 400,
+                          color: Colors.white,
+                          child: FutureBuilder<List<Category>>(
+                            future: dbHelper.getCategories(),
+                            builder: (context, snapshot) {
+                              return snapshot.hasData
+                                  ? ListView.builder(
+                                      itemCount: snapshot.data.length,
+                                      itemBuilder: (_, int position) {
+                                        final item = snapshot.data[position];
+                                        return Card(
+                                          child: ListTile(
+                                            title: Text(item.name),
+                                          ),
+                                        );
+                                      },
+                                    )
+                                  : Center(
+                                      //child: CircularProgressIndicator(),
+                                      child: Text("No Transaction yet"),
+                                    );
+                            },
+                          ),
+                        );
+                      });
+                },
+              ),
             ),
             Padding(
               padding: EdgeInsets.only(top: 15.0, bottom: 15.0),

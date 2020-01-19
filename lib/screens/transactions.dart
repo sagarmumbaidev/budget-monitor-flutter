@@ -56,7 +56,8 @@ class _TransactionsState extends State<Transactions> {
                 },
               )
             : Center(
-                child: CircularProgressIndicator(),
+                //child: CircularProgressIndicator(),
+                child: Text("No Transaction yet"),
               );
       },
     );

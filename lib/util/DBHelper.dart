@@ -32,6 +32,13 @@ class DBHelper {
         "amount DOUBLE, "
         "description TEXT,"
         "transaction_type TEXT)");
+    await db.execute("CREATE TABLE categories ("
+        "id INTEGER PRIMARY KEY, "
+        "name TEXT)");
+    await db.execute(
+        "INSERT INTO categories ('id', 'name') values (?, ?)", [1, "Food"]);
+    await db.execute("INSERT INTO categories ('id', 'name') values (?, ?)",
+        [2, "Education"]);
     /* await db.execute("CREATE TABLE categories ("
         "id INTEGER PRIMARY KEY, "
         "name TEXT");
@@ -64,7 +71,7 @@ class DBHelper {
     return list;
   }
 
-  /*Future<List<Category>> getCategories() async {
+  Future<List<Category>> getCategories() async {
     var dbClient = await db;
     //List<Map> maps = await dbClient.query(TABLE, columns: [ID, NOTE]);
     var result = await dbClient.rawQuery("SELECT * FROM categories");
@@ -73,7 +80,7 @@ class DBHelper {
       return Category.fromMap(row);
     }).toList();
     return list;
-  }*/
+  }
 
   /*Future<int> delete(int id) async {
     var dbClient = await db;
