@@ -3,6 +3,8 @@ import 'package:money_monitor/model/category.dart';
 import 'package:money_monitor/model/transaction.dart';
 import 'package:money_monitor/util/DBHelper.dart';
 
+//enum Category { Food, Travel, Other, Market, Bank }
+
 class AddTransaction extends StatefulWidget {
   @override
   _AddTransactionState createState() => _AddTransactionState();
@@ -61,36 +63,29 @@ class _AddTransactionState extends State<AddTransaction> {
                   textScaleFactor: 1.5,
                 ),
                 onPressed: () {
+                  dbHelper.getCategories().then((val) {
+                    for (var item in val) {
+                      print(item.name);
+                    }
+                  });
                   showDialog(
                       context: context,
+                      barrierDismissible: true,
                       builder: (BuildContext context) {
-                        return Container(
-                          margin: EdgeInsets.only(
-                              top: 30, left: 20, right: 20, bottom: 20),
-                          width: MediaQuery.of(context).size.width - 400,
-                          height: MediaQuery.of(context).size.height - 400,
-                          color: Colors.white,
-                          child: FutureBuilder<List<Category>>(
-                            future: dbHelper.getCategories(),
-                            builder: (context, snapshot) {
-                              return snapshot.hasData
-                                  ? ListView.builder(
-                                      itemCount: snapshot.data.length,
-                                      itemBuilder: (_, int position) {
-                                        final item = snapshot.data[position];
-                                        return Card(
-                                          child: ListTile(
-                                            title: Text(item.name),
-                                          ),
-                                        );
-                                      },
-                                    )
-                                  : Center(
-                                      //child: CircularProgressIndicator(),
-                                      child: Text("No Transaction yet"),
-                                    );
-                            },
-                          ),
+                        return SimpleDialog(
+                          title: const Text('Select Category '),
+                          children: <Widget>[
+                            dbHelper.getCategories().then((val) {
+                              for (var item in val) {
+                                SimpleDialogOption(
+                                  onPressed: () {
+                                    Navigator.pop(context);
+                                  },
+                                  child: const Text('Food'),
+                                );
+                              }
+                            }),
+                          ],
                         );
                       });
                 },
@@ -180,4 +175,82 @@ class _AddTransactionState extends State<AddTransaction> {
       ),
     );
   }
+
+  /*Future<Departments> _asyncSimpleDialog(BuildContext context) async {
+    return await showDialog<Departments>(
+        context: context,
+        barrierDismissible: true,
+        builder: (BuildContext context) {
+          return SimpleDialog(
+            title: const Text('Select Departments '),
+            children: <Widget>[
+              SimpleDialogOption(
+                onPressed: () {
+                  Navigator.pop(context, Departments.Production);
+                },
+                child: const Text('Production'),
+              ),
+              SimpleDialogOption(
+                onPressed: () {
+                  Navigator.pop(context, Departments.Research);
+                },
+                child: const Text('Research'),
+              ),
+              SimpleDialogOption(
+                onPressed: () {
+                  Navigator.pop(context, Departments.Purchasing);
+                },
+                child: const Text('Purchasing'),
+              ),
+              SimpleDialogOption(
+                onPressed: () {
+                  Navigator.pop(context, Departments.Marketing);
+                },
+                child: const Text('Marketing'),
+              ),
+              SimpleDialogOption(
+                onPressed: () {
+                  Navigator.pop(context, Departments.Accounting);
+                },
+                child: const Text('Accounting'),
+              )
+            ],
+          );
+        });
+  }*/
 }
+
+/*
+showDialog(
+                      context: context,
+                      builder: (BuildContext context) {
+                        return Container(
+                          margin: EdgeInsets.only(
+                              top: 30, left: 20, right: 20, bottom: 20),
+                          width: MediaQuery.of(context).size.width - 400,
+                          height: MediaQuery.of(context).size.height - 400,
+                          color: Colors.white,
+                          child: FutureBuilder<List<Category>>(
+                            future: dbHelper.getCategories(),
+                            builder: (context, snapshot) {
+                              return snapshot.hasData
+                                  ? ListView.builder(
+                                      itemCount: snapshot.data.length,
+                                      itemBuilder: (_, int position) {
+                                        final item = snapshot.data[position];
+                                        return Card(
+                                          child: ListTile(
+                                            title: Text(item.name),
+                                          ),
+                                        );
+                                      },
+                                    )
+                                  : Center(
+                                      //child: CircularProgressIndicator(),
+                                      child: Text("No category present"),
+                                    );
+                            },
+                          ),
+                        );
+                      });
+* */
