@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:money_monitor/model/transaction.dart';
 import 'package:money_monitor/screens/add_transaction.dart';
 import 'package:money_monitor/util/DBHelper.dart';
+import 'package:intl/intl.dart';
 
 class Transactions extends StatefulWidget {
   @override
@@ -46,8 +47,10 @@ class _TransactionsState extends State<Transactions> {
                   final item = snapshot.data[position];
                   return Card(
                     child: ListTile(
+                      leading: Text(item.category),
                       title: Text(item.description),
-                      subtitle: Text(item.transactionType),
+                      subtitle: Text(
+                          "${item.transactionType} on ${DateFormat.yMMMd().format(DateTime.parse(item.transactionDate))}"),
                       trailing: Text(item.transactionType == 'Expense'
                           ? '-' + item.amount.toString()
                           : '+' + item.amount.toString()),

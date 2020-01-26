@@ -31,7 +31,10 @@ class DBHelper {
         "id INTEGER PRIMARY KEY, "
         "amount DOUBLE, "
         "description TEXT,"
-        "transaction_type TEXT)");
+        "transaction_type TEXT,"
+        "category_id INTEGER,"
+        "transaction_date TEXT)");
+
     await db.execute("CREATE TABLE categories ("
         "id INTEGER PRIMARY KEY, "
         "name TEXT)");
@@ -83,7 +86,20 @@ class DBHelper {
   Future<List<MoneyTransaction>> getTransactions() async {
     var dbClient = await db;
     //List<Map> maps = await dbClient.query(TABLE, columns: [ID, NOTE]);
-    var result = await dbClient.rawQuery("SELECT * FROM transactions");
+    var result = await dbClient.rawQuery(
+        "SELECT transactions.amount, transactions.description, transactions.transaction_type, transactions.transaction_date, transactions.category_id , categories.name FROM transactions INNER JOIN categories ON transactions.category_id=categories.id");
+    if (result.length == 0) return null;
+    List<MoneyTransaction> list = result.map((row) {
+      return MoneyTransaction.fromMap(row);
+    }).toList();
+    return list;
+  }
+
+  Future<List<MoneyTransaction>> getMonthlyDateTransactions() async {
+    var dbClient = await db;
+    //List<Map> maps = await dbClient.query(TABLE, columns: [ID, NOTE]);
+    var result = await dbClient.rawQuery(
+        "SELECT transactions.transaction_date FROM transactions GROUP  BY DATE(transactions.transaction_date) ");
     if (result.length == 0) return null;
     List<MoneyTransaction> list = result.map((row) {
       return MoneyTransaction.fromMap(row);
