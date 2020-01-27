@@ -41,27 +41,27 @@ class DBHelper {
     await db.execute(
         "INSERT INTO categories ('id', 'name') values (?, ?)", [1, "Food"]);
     await db.execute("INSERT INTO categories ('id', 'name') values (?, ?)",
-        [2, "Education"]);
+        [2, "Education", "Icons.face"]);
     await db.execute("INSERT INTO categories ('id', 'name') values (?, ?)",
-        [3, "Education 3"]);
+        [3, "Education 3", "Icons.face"]);
     await db.execute("INSERT INTO categories ('id', 'name') values (?, ?)",
-        [4, "Education 4"]);
+        [4, "Education 4", "Icons.face"]);
     await db.execute("INSERT INTO categories ('id', 'name') values (?, ?)",
-        [5, "Education 5"]);
+        [5, "Education 5", "Icons.face"]);
     await db.execute("INSERT INTO categories ('id', 'name') values (?, ?)",
-        [6, "Education 6"]);
+        [6, "Education 6", "Icons.face"]);
     await db.execute("INSERT INTO categories ('id', 'name') values (?, ?)",
-        [7, "Education 7"]);
+        [7, "Education 7", "Icons.face"]);
     await db.execute("INSERT INTO categories ('id', 'name') values (?, ?)",
-        [8, "Education 8"]);
+        [8, "Education 8", "Icons.face"]);
     await db.execute("INSERT INTO categories ('id', 'name') values (?, ?)",
-        [9, "Education 9"]);
+        [9, "Education 9", "Icons.face"]);
     await db.execute("INSERT INTO categories ('id', 'name') values (?, ?)",
-        [10, "Education 10"]);
+        [10, "Education 10", "Icons.face"]);
     await db.execute("INSERT INTO categories ('id', 'name') values (?, ?)",
-        [11, "Education 11"]);
+        [11, "Education 11", "Icons.face"]);
     await db.execute("INSERT INTO categories ('id', 'name') values (?, ?)",
-        [12, "Education 12"]);
+        [12, "Education 12", "Icons.face"]);
     /* await db.execute("CREATE TABLE categories ("
         "id INTEGER PRIMARY KEY, "
         "name TEXT");
@@ -83,11 +83,11 @@ class DBHelper {
     });*/
   }
 
-  Future<List<MoneyTransaction>> getTransactions() async {
+  Future<List<MoneyTransaction>> getTransactions(String date) async {
     var dbClient = await db;
     //List<Map> maps = await dbClient.query(TABLE, columns: [ID, NOTE]);
     var result = await dbClient.rawQuery(
-        "SELECT transactions.amount, transactions.description, transactions.transaction_type, transactions.transaction_date, transactions.category_id , categories.name FROM transactions INNER JOIN categories ON transactions.category_id=categories.id");
+        "SELECT transactions.id, transactions.amount, transactions.description, transactions.transaction_type, transactions.transaction_date, transactions.category_id , categories.name FROM transactions INNER JOIN categories ON transactions.category_id=categories.id WHERE transactions.transaction_date = '$date'");
     if (result.length == 0) return null;
     List<MoneyTransaction> list = result.map((row) {
       return MoneyTransaction.fromMap(row);

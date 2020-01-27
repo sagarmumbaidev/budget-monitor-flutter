@@ -38,7 +38,7 @@ class _TransactionsState extends State<Transactions> {
 
   getTransactionListView() {
     return FutureBuilder<List<MoneyTransaction>>(
-      future: dbHelper.getTransactions(),
+      future: dbHelper.getMonthlyDateTransactions(),
       builder: (context, snapshot) {
         return snapshot.hasData
             ? ListView.builder(
@@ -46,20 +46,58 @@ class _TransactionsState extends State<Transactions> {
                 itemBuilder: (_, int position) {
                   final item = snapshot.data[position];
                   return Card(
-                    child: ListTile(
-                      leading: Text(item.category),
-                      title: Text(item.description),
-                      subtitle: Text(
-                          "${item.transactionType} on ${DateFormat.yMMMd().format(DateTime.parse(item.transactionDate))}"),
-                      trailing: Text(item.transactionType == 'Expense'
-                          ? '-' + item.amount.toString()
-                          : '+' + item.amount.toString()),
-                    ),
-                  );
+                      elevation: 2,
+                      child: Column(
+                        children: <Widget>[
+                          Padding(
+                            padding: EdgeInsets.only(top: 20.0, bottom: 10.0),
+                            child: Text("${DateFormat.yMMMd().format(
+                              DateTime.parse(item.transactionDate),
+                            )}"),
+                          ),
+                          Padding(
+                            padding: EdgeInsets.all(8.0),
+                            child: FutureBuilder<List<MoneyTransaction>>(
+                              future: dbHelper.getTransactions(
+                                  item.transactionDate.toString()),
+                              builder: (context, snapshot) {
+                                return snapshot.hasData
+                                    ? ListView.builder(
+                                        shrinkWrap: true,
+                                        itemCount: snapshot.data.length,
+                                        itemBuilder: (_, int position) {
+                                          final item = snapshot.data[position];
+                                          return Card(
+                                            elevation: 5,
+                                            child: ListTile(
+                                              leading: Icon(Icons.fastfood),
+                                              title: Text(item.description),
+                                              subtitle: Text(
+                                                  "${item.transactionType} on ${DateFormat.yMMMd().format(DateTime.parse(item.transactionDate))}"),
+                                              trailing: Text(item
+                                                          .transactionType ==
+                                                      'Expense'
+                                                  ? '-' + item.amount.toString()
+                                                  : '+' +
+                                                      item.amount.toString()),
+                                              onTap: () {
+                                                print(item.id);
+                                              },
+                                            ),
+                                          );
+                                        },
+                                      )
+                                    : Center(
+                                        child: CircularProgressIndicator(),
+                                      );
+                              },
+                            ),
+                          ),
+                        ],
+                      ));
                 },
               )
             : Center(
-                //child: CircularProgressIndicator(),
                 child: Text("No Transaction yet"),
               );
       },

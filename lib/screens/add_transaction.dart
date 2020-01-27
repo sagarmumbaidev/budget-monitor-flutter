@@ -1,9 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:money_monitor/model/transaction.dart';
 import 'package:money_monitor/util/DBHelper.dart';
-import 'package:intl/intl.dart';
-
-//enum Category { Food, Travel, Other, Market, Bank }
 
 class AddTransaction extends StatefulWidget {
   @override
@@ -40,12 +37,18 @@ class _AddTransactionState extends State<AddTransaction> {
           children: <Widget>[
             // Expense type section
             ListTile(
-              title: DropdownButton(
+                title: Container(
+              alignment: Alignment.center,
+              child: DropdownButton(
                   items: _transactionType.map((String dropDownStringItem) {
                     return DropdownMenuItem<String>(
                       value: dropDownStringItem,
-                      child: Center(
-                        child: Text(dropDownStringItem),
+                      child: Row(
+                        children: <Widget>[
+                          Icon(Icons.money_off),
+                          Container(width: 10.0),
+                          Text(dropDownStringItem),
+                        ],
                       ),
                     );
                   }).toList(),
@@ -56,7 +59,7 @@ class _AddTransactionState extends State<AddTransaction> {
                       _defaultSelectedTransactionType = valueSelectedByUser;
                     });
                   }),
-            ),
+            )),
             Padding(
               padding: EdgeInsets.only(top: 15.0, bottom: 15.0),
               child: RaisedButton(
@@ -183,53 +186,61 @@ class _AddTransactionState extends State<AddTransaction> {
                         borderRadius: BorderRadius.circular(5.0))),
               ),
             ),
-
-            // Button section
             Padding(
               padding: EdgeInsets.only(top: 15.0, bottom: 15.0),
               child: Row(
                 children: <Widget>[
                   Expanded(
-                    child: RaisedButton(
-                      color: Theme.of(context).primaryColorDark,
-                      textColor: Theme.of(context).primaryColorLight,
-                      child: Text(
-                        'Add',
-                        textScaleFactor: 1.5,
+                      child: Material(
+                    elevation: 4.0,
+                    shape: CircleBorder(),
+                    clipBehavior: Clip.hardEdge,
+                    color: Colors.transparent,
+                    child: Ink.image(
+                      image: AssetImage('assets/tick.png'),
+                      fit: BoxFit.cover,
+                      width: 120.0,
+                      height: 120.0,
+                      child: InkWell(
+                        onTap: () {
+                          setState(() {
+                            if (amountController.text.isNotEmpty) {
+                              MoneyTransaction mt = MoneyTransaction(
+                                  null,
+                                  double.parse(amountController.text),
+                                  descriptionController.text,
+                                  _defaultSelectedTransactionType,
+                                  selectCategoryButtonId,
+                                  selectDate);
+                              dbHelper.save(mt);
+                              Navigator.pop(context);
+                            }
+                          });
+                        },
                       ),
-                      onPressed: () {
-                        setState(() {
-                          if (amountController.text.isNotEmpty) {
-                            MoneyTransaction mt = MoneyTransaction(
-                                null,
-                                double.parse(amountController.text),
-                                descriptionController.text,
-                                _defaultSelectedTransactionType,
-                                selectCategoryButtonId,
-                                selectDate);
-                            dbHelper.save(mt);
-                            Navigator.pop(context);
-                          }
-                        });
-                      },
                     ),
-                  ),
+                  )),
                   Container(
                     width: 5.0,
                   ),
                   Expanded(
-                    child: RaisedButton(
-                      color: Theme.of(context).primaryColorDark,
-                      textColor: Theme.of(context).primaryColorLight,
-                      child: Text(
-                        'Cancel',
-                        textScaleFactor: 1.5,
+                      child: Material(
+                    elevation: 4.0,
+                    shape: CircleBorder(),
+                    clipBehavior: Clip.hardEdge,
+                    color: Colors.transparent,
+                    child: Ink.image(
+                      image: AssetImage('assets/quit.png'),
+                      fit: BoxFit.cover,
+                      width: 120.0,
+                      height: 120.0,
+                      child: InkWell(
+                        onTap: () {
+                          Navigator.pop(context);
+                        },
                       ),
-                      onPressed: () {
-                        Navigator.pop(context);
-                      },
                     ),
-                  ),
+                  )),
                 ],
               ),
             ),

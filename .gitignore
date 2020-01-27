@@ -6,5 +6,6 @@
 .pub/
 
 build/
+assets/
 
 .flutter-plugins
