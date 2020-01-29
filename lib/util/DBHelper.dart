@@ -37,31 +37,10 @@ class DBHelper {
 
     await db.execute("CREATE TABLE categories ("
         "id INTEGER PRIMARY KEY, "
-        "name TEXT)");
-    await db.execute(
-        "INSERT INTO categories ('id', 'name') values (?, ?)", [1, "Food"]);
-    await db.execute("INSERT INTO categories ('id', 'name') values (?, ?)",
-        [2, "Education", "Icons.face"]);
-    await db.execute("INSERT INTO categories ('id', 'name') values (?, ?)",
-        [3, "Education 3", "Icons.face"]);
-    await db.execute("INSERT INTO categories ('id', 'name') values (?, ?)",
-        [4, "Education 4", "Icons.face"]);
-    await db.execute("INSERT INTO categories ('id', 'name') values (?, ?)",
-        [5, "Education 5", "Icons.face"]);
-    await db.execute("INSERT INTO categories ('id', 'name') values (?, ?)",
-        [6, "Education 6", "Icons.face"]);
-    await db.execute("INSERT INTO categories ('id', 'name') values (?, ?)",
-        [7, "Education 7", "Icons.face"]);
-    await db.execute("INSERT INTO categories ('id', 'name') values (?, ?)",
-        [8, "Education 8", "Icons.face"]);
-    await db.execute("INSERT INTO categories ('id', 'name') values (?, ?)",
-        [9, "Education 9", "Icons.face"]);
-    await db.execute("INSERT INTO categories ('id', 'name') values (?, ?)",
-        [10, "Education 10", "Icons.face"]);
-    await db.execute("INSERT INTO categories ('id', 'name') values (?, ?)",
-        [11, "Education 11", "Icons.face"]);
-    await db.execute("INSERT INTO categories ('id', 'name') values (?, ?)",
-        [12, "Education 12", "Icons.face"]);
+        "name TEXT,"
+        "icon TEXT)");
+    await db.execute("INSERT INTO categories ('id', 'name', 'icon') values (?, ?, ?)", [1, "Food", "Icons.face"]);
+    await db.execute("INSERT INTO categories ('id', 'name', 'icon') values (?, ?, ?)", [2, "Education", "Icons.face"]);
     /* await db.execute("CREATE TABLE categories ("
         "id INTEGER PRIMARY KEY, "
         "name TEXT");
